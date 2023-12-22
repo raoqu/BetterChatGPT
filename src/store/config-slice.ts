@@ -34,12 +34,12 @@ export interface ConfigSlice {
 
 export const createConfigSlice: StoreSlice<ConfigSlice> = (set, get) => ({
   openConfig: false,
-  theme: 'dark',
+  theme: 'light',
   hideMenuOptions: false,
   hideSideMenu: false,
   autoTitle: false,
   enterToSubmit: true,
-  advancedMode: true,
+  advancedMode: false,
   defaultChatConfig: _defaultChatConfig,
   defaultSystemMessage: _defaultSystemMessage,
   inlineLatex: false,

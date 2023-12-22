@@ -1,0 +1,16 @@
+http://localhost, https://localhost {
+    bind 127.0.0.1
+
+    handle_path /api/* {
+        reverse_proxy http://localhost:9000
+    }
+
+    handle /* {
+        reverse_proxy http://localhost:5173
+    }
+
+    root * www/
+    encode gzip
+
+    file_server
+}

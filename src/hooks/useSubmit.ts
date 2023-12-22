@@ -12,8 +12,9 @@ const useSubmit = () => {
   const { t, i18n } = useTranslation('api');
   const error = useStore((state) => state.error);
   const setError = useStore((state) => state.setError);
-  const apiEndpoint = useStore((state) => state.apiEndpoint);
-  const apiKey = useStore((state) => state.apiKey);
+  const apiEndpoint = import.meta.env.VITE_DEFAULT_API_ENDPOINT;
+  // const apiKey = useStore((state) => state.apiKey);
+  const apiKey: string = import.meta.env.VITE_OPENAI_API_KEY || '';
   const setGenerating = useStore((state) => state.setGenerating);
   const generating = useStore((state) => state.generating);
   const currentChatIndex = useStore((state) => state.currentChatIndex);
@@ -31,19 +32,11 @@ const useSubmit = () => {
         }
 
         // other endpoints
-        data = await getChatCompletion(
-          useStore.getState().apiEndpoint,
-          message,
-          _defaultChatConfig
-        );
-      } else if (apiKey) {
+        data = await getChatCompletion(apiEndpoint, message, _defaultChatConfig);
+      }
+      else if (apiKey) {
         // own apikey
-        data = await getChatCompletion(
-          useStore.getState().apiEndpoint,
-          message,
-          _defaultChatConfig,
-          apiKey
-        );
+        data = await getChatCompletion(apiEndpoint, message, _defaultChatConfig, apiKey);
       }
     } catch (error: unknown) {
       throw new Error(`Error generating title!\n${(error as Error).message}`);
@@ -75,7 +68,8 @@ const useSubmit = () => {
         chats[currentChatIndex].config.max_tokens,
         chats[currentChatIndex].config.model
       );
-      if (messages.length === 0) throw new Error('Message exceed max token!');
+      if (messages.length === 0)
+        throw new Error('Message exceed max token!');
 
       // no api key (free)
       if (!apiKey || apiKey.length === 0) {
@@ -85,19 +79,11 @@ const useSubmit = () => {
         }
 
         // other endpoints
-        stream = await getChatCompletionStream(
-          useStore.getState().apiEndpoint,
-          messages,
-          chats[currentChatIndex].config
-        );
-      } else if (apiKey) {
+        stream = await getChatCompletionStream(apiEndpoint, messages, chats[currentChatIndex].config);
+      }
+      else if (apiKey) {
         // own apikey
-        stream = await getChatCompletionStream(
-          useStore.getState().apiEndpoint,
-          messages,
-          chats[currentChatIndex].config,
-          apiKey
-        );
+        stream = await getChatCompletionStream(apiEndpoint, messages, chats[currentChatIndex].config, apiKey);
       }
 
       if (stream) {
